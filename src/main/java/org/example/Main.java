@@ -27,13 +27,14 @@ public class Main {
 
     private static String getJSONStringByURL(String url) {
         StringBuilder jsonStr = new StringBuilder();
-        try (CloseableHttpClient httpClient = HttpClientBuilder.create()
-                .setDefaultRequestConfig(RequestConfig.custom()
-                        .setConnectTimeout(5000)
-                        .setSocketTimeout(30000)
-                        .setRedirectsEnabled(false)
-                        .build())
-                .build()) {
+        try {
+            CloseableHttpClient httpClient = HttpClientBuilder.create()
+                    .setDefaultRequestConfig(RequestConfig.custom()
+                            .setConnectTimeout(5000)
+                            .setSocketTimeout(30000)
+                            .setRedirectsEnabled(false)
+                            .build())
+                    .build();
             HttpGet request = new HttpGet(url);
             CloseableHttpResponse response = httpClient.execute(request);
             HttpEntity entity = response.getEntity();
@@ -45,6 +46,8 @@ public class Main {
                     jsonStr.append(tmp).append("\n");
                 }
             }
+            response.close();
+            httpClient.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
